@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap" rel="stylesheet">
+
+  <title>Soin.visual</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #fff;
+      padding: 50px;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      gap: 50px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+.slider-wrapper {
+   position: relative;
+   max-width: 600px;
+   width: 100%; 
+}
+
+
+.slider {
+   position: relative;
+   max-width: 600px;
+   width: 100%;
+   height: 800px;
+   overflow: hidden; 
+}
+
+
+.slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slides img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.slides img.active {
+  opacity: 1;
+}
+
+
+.arrow img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+
+
+   .arrow {
+  width: 30px;
+  height: 30px;
+}
+
+    .arrow.left {
+      left: -50px;
+    }
+
+    .arrow.right {
+      right: -50px;
+    }
+
+    .content {
+      max-width: 500px;
+    }
+
+    .content h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .content p {
+      font-size: 12px;
+      margin-bottom: 80px;
+      line-height: 1.6;
+    }
+
+    .content a {
+      display: block;
+      font-size: 14px;
+      color: #000;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    @media(max-width: 1000px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .slider, .content {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+  <div class="arrow left">
+     <img src="img/arrow-left.png" alt="Prev">
+  </div>
+
+  <div class="slider">
+    <div class="slides">
+      <img src="img/image1.jpg" class="active">
+      <img src="img/image2.jpg">
+      <img src="img/image3.jpg">
+      <img src="img/image4.jpg">
+      <img src="img/image5.jpg">
+      <img src="img/image6.jpg">
+      <img src="img/image7.jpg">
+      <img src="img/image8.jpg">
+      <img src="img/image9.jpg">
+
+    </div>
+  </div>
+
+  <div class="arrow right">
+     <img src="img/arrow-right.png" alt="Next">
+  </div>
+
+
+
+    <div class="content">
+      <h1>Soin.visual</h1>
+      <p>
+        Soin. is a creative atelier based on architectural visualisation, focused on capturing the unique
+        atmosphere of each space through images. We create compelling architectural visuals that
+        bring spaces to life. Blending technical precision with a strong visual sensibility, our work
+        transforms design concepts into striking, detail-rich images. Every project is an opportunity to
+        tell a story—capturing not just form and function, but atmosphere and identity.
+      </p>
+      <a href="mailto:info@soinvisual.com">info@soinvisual.com</a>
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slides img');
+    const prev = document.querySelector('.arrow.left');
+    const next = document.querySelector('.arrow.right');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    prev.addEventListener('click', () => {
+      current = (current === 0) ? slides.length - 1 : current - 1;
+      showSlide(current);
+    });
+
+    next.addEventListener('click', () => {
+      current = (current === slides.length - 1) ? 0 : current + 1;
+      showSlide(current);
+    });
+
+
+  // Autoplay ogni 5 secondi
+  setInterval(() => {
+    current = (current === slides.length - 1) ? 0 : current + 1;
+    showSlide(current);
+  }, 4000);
+
+  </script>
+</body>
+</html>
+
