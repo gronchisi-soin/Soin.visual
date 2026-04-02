@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon.png">
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&display=swap" rel="stylesheet">
 
@@ -42,7 +43,8 @@
    position: relative;
    max-width: 600px;
    width: 100%;
-   height: 800px;
+   height: 70hv;
+   max-height: 800px;
    overflow: hidden; 
 }
 
@@ -117,14 +119,28 @@
     }
 
     @media(max-width: 1000px) {
+      body {
+        padding: 20px;
+      }
+      
       .container {
         flex-direction: column;
         align-items: center;
+        gap: 30px;
       }
 
-      .slider, .content {
-        width: 100%;
+      .slider {
+        height: 60vh;
       }
+      
+      .content {
+        text-align: center;
+      }
+
+      .arrow.left, .arrow.right {
+        display: none;
+      }
+      
     }
   </style>
 </head>
@@ -166,7 +182,7 @@
         tell a story—capturing not just form and function, but atmosphere and identity.
       </p>
       <a href="mailto:info@soinvisual.com">info@soinvisual.com</a>
-      <a href="https://www.instagram.com/soin.visual/">Instagram</a>
+      <a href="https://www.instagram.com/soin.visual/" target="_blank" rel="noopener">Instagram</a>
     </div>
   </div>
 
