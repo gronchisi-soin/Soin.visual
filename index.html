@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soin.visual</title>
 
   <style>
@@ -10,39 +10,48 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       background: #fff;
-      font-family: Helvetica Neue, sans-serif;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: #000;
     }
 
     .wrapper {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 80px 20px 20px; /* spazio per header fisso */
+      padding: 80px 20px 20px;
     }
 
-    /* HEADER FIXED SOLO TITOLO */
+    /* HEADER */
     .header {
       position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       background: #fff;
       z-index: 1000;
-      padding: 10px 20px;
-      border-bottom: 0px solid #eee;
+      border-bottom: 1px solid #000;
     }
 
     .header-inner {
       max-width: 1400px;
       margin: 0 auto;
+      padding: 10px 20px;
     }
 
     .header h1 {
       font-size: 25px;
+      font-weight: 500;
     }
 
-    /* CONTENUTO HEADER (sotto) */
+    /* INTRO */
     .intro {
       max-width: 700px;
       margin-bottom: 60px;
@@ -67,13 +76,20 @@
     .gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .gallery-item {
+      position: relative;
+      align-self: start;
     }
 
     .gallery-item img {
       width: 100%;
       display: block;
       cursor: pointer;
+      user-select: none;
     }
 
     @media (max-width: 1000px) {
@@ -88,49 +104,114 @@
       }
     }
 
+    /* FOOTER */
+    .footer-link {
+      display: block;
+      font-size: 14px;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 60px;
+      padding-top: 150px;
+    }
+
     /* LIGHTBOX */
     .lightbox {
       position: fixed;
-      top: 0;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .lightbox.active,
+    .lightbox.closing {
+      pointer-events: auto;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.82);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .lightbox.active .lightbox-backdrop {
+      opacity: 1;
+    }
+
+    .lightbox.closing .lightbox-backdrop {
+      opacity: 0;
+    }
+
+    .lightbox-stage {
+      position: fixed;
       left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      z-index: 2;
+      overflow: hidden;
+      will-change: left, top, width, height, opacity;
+      transition:
+        left 0.45s cubic-bezier(.22,.61,.36,1),
+        top 0.45s cubic-bezier(.22,.61,.36,1),
+        width 0.45s cubic-bezier(.22,.61,.36,1),
+        height 0.45s cubic-bezier(.22,.61,.36,1),
+        opacity 0.15s linear;
+    }
+
+    .lightbox.active .lightbox-stage,
+    .lightbox.closing .lightbox-stage {
+      opacity: 1;
+    }
+
+    .lightbox-stage img {
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-    }
-
-    .lightbox.active {
-      display: flex;
-    }
-
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
       user-select: none;
+    }
+
+    .lightbox-close,
+    .nav {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .lightbox.active .lightbox-close,
+    .lightbox.active .nav,
+    .lightbox.closing .lightbox-close,
+    .lightbox.closing .nav {
+      opacity: 1;
     }
 
     .lightbox-close {
-      position: absolute;
+      position: fixed;
       top: 20px;
       right: 30px;
-      font-size: 30px;
-      color: #fff;
+      font-size: 34px;
+      line-height: 1;
+      color: #000;
       cursor: pointer;
+      z-index: 3;
+      background: none;
+      border: 0;
+      padding: 0;
     }
 
     .nav {
-      position: absolute;
+      position: fixed;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 40px;
-      color: #fff;
       cursor: pointer;
-      padding: 10px;
-      user-select: none;
+      z-index: 3;
+      background: none;
+      border: 0;
+      padding: 0;
     }
 
     .nav.left {
@@ -142,180 +223,355 @@
     }
 
     .nav img {
-      width: 30px;
-      height: 30px;
-      object-fit: contain;
-      pointer-events: none;
-    }
-
-    /* BACK TO TOP */
-    .footer-link {
+      width: 20px;
       display: block;
-      font-size: 14px;
-      color: #000;
-      text-decoration: none;
-      font-weight: bold;
-      margin-top: 60px;
     }
 
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-    
-    .nav {
-  outline: none;
-}
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
 
-.nav:focus {
-  outline: none;
-}
-    
+      .lightbox-close {
+        top: 16px;
+        right: 20px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<!-- HEADER FIXED -->
-<div class="header">
-  <div class="header-inner">
-    <h1>Soin.visual</h1>
-  </div>
-</div>
-
-<div class="wrapper">
-
-  <!-- INTRO (ex header) -->
-  <div class="intro">
-    <p>
-      Soin. is a creative atelier based on architectural visualisation.
-    </p>
-
-    <a href="mailto:info@soinvisual.com">info@soinvisual.com</a>
-    <a href="https://www.instagram.com/soin.visual/" target="_blank">Instagram</a>
+  <div class="header">
+    <div class="header-inner">
+      <h1>Soin.visual</h1>
+    </div>
   </div>
 
-  <div class="gallery">
-    <div class="gallery-item"><img src="img/image1.jpg"></div>
-    <div class="gallery-item"><img src="img/image2.jpg"></div>
-    <div class="gallery-item"><img src="img/image3.jpg"></div>
-    <div class="gallery-item"><img src="img/image4.jpg"></div>
-    <div class="gallery-item"><img src="img/image5.jpg"></div>
-    <div class="gallery-item"><img src="img/image6.jpg"></div>
-    <div class="gallery-item"><img src="img/image7.jpg"></div>
-    <div class="gallery-item"><img src="img/image8.jpg"></div>
-    <div class="gallery-item"><img src="img/image9.jpg"></div>
+  <div class="wrapper">
+    <div class="intro">
+      <p>Soin. is a creative atelier based on architectural visualisation.</p>
+      <a href="mailto:info@soinvisual.com">info@soinvisual.com</a>
+      <a href="https://www.instagram.com/soin.visual/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </div>
+
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="img/image1.jpg" data-full="img/image1.jpg" alt="Image 1">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image2.jpg" data-full="img/image2.jpg" alt="Image 2">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image3.jpg" data-full="img/image3.jpg" alt="Image 3">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image4.jpg" data-full="img/image4.jpg" alt="Image 4">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image5.jpg" data-full="img/image5.jpg" alt="Image 5">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image6.jpg" data-full="img/image6.jpg" alt="Image 6">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image7.jpg" data-full="img/image7.jpg" alt="Image 7">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image8.jpg" data-full="img/image8.jpg" alt="Image 8">
+      </div>
+      <div class="gallery-item">
+        <img src="img/image9.jpg" data-full="img/image9.jpg" alt="Image 9">
+      </div>
+    </div>
+
+    <a href="#" class="footer-link">Back to top</a>
   </div>
 
-  <a href="#" id="backToTop" class="footer-link">Back to top</a>
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-backdrop" id="backdrop"></div>
 
-</div>
+    <button class="lightbox-close" id="closeBtn" aria-label="Chiudi lightbox">&times;</button>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <span class="lightbox-close" id="closeBtn">&times;</span>
-  <span class="nav left" id="prev">
-    <img src="img/arrow-white-left.png" alt="Prev">
-  </span>
-  <img id="lightboxImg" src="">
-  <span class="nav right" id="next">
-    <img src="img/arrow-white-right.png" alt="Next">
-  </span>
-</div>
+    <button class="nav left" id="prev" aria-label="Immagine precedente">
+      <img src="img/arrow-left.png" alt="">
+    </button>
 
-<script>
-  const images = document.querySelectorAll('.gallery-item img');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const closeBtn = document.getElementById('closeBtn');
-  const prevBtn = document.getElementById('prev');
-  const nextBtn = document.getElementById('next');
+    <div class="lightbox-stage" id="stage">
+      <img id="lightboxImg" src="" alt="">
+    </div>
 
-  let currentIndex = 0;
+    <button class="nav right" id="next" aria-label="Immagine successiva">
+      <img src="img/arrow-right.png" alt="">
+    </button>
+  </div>
 
-  const imageArray = Array.from(images).map(img => img.src);
+  <script>
+    const thumbs = [...document.querySelectorAll('.gallery-item img')];
+    const lightbox = document.getElementById('lightbox');
+    const backdrop = document.getElementById('backdrop');
+    const stage = document.getElementById('stage');
+    const stageImg = document.getElementById('lightboxImg');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
 
-  function showImage(index) {
-    currentIndex = index;
-    lightboxImg.src = imageArray[currentIndex];
-  }
+    let currentIndex = 0;
 
-  images.forEach((img, index) => {
-    img.addEventListener('click', () => {
-      lightbox.classList.add('active');
-      showImage(index);
-    });
-  });
+    const MARGIN = 24;
+    const MULTI_ROW_TARGET_Y = 0.50;   // per righe con più immagini
+    const SINGLE_ROW_TARGET_Y = 0.50;  // per righe con una sola immagine
+    const ROW_TOLERANCE = 4;
 
-  function closeLightbox() {
-    lightbox.classList.remove('active');
-    lightboxImg.src = '';
-  }
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
 
-  closeBtn.addEventListener('click', closeLightbox);
+    function getThumb(index) {
+      return thumbs[index];
+    }
 
-  prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length;
-    showImage(currentIndex);
-  });
+    function getThumbRect(index) {
+      return getThumb(index).getBoundingClientRect();
+    }
 
-  nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % imageArray.length;
-    showImage(currentIndex);
-  });
+    function setImage(index) {
+      const img = getThumb(index);
+      stageImg.src = img.dataset.full || img.src;
+      stageImg.alt = img.alt || '';
+    }
 
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
+    function getRowsData() {
+      const items = thumbs.map((img, index) => ({
+        index,
+        rect: img.getBoundingClientRect()
+      }));
 
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('active')) return;
+      const rows = [];
 
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') nextBtn.click();
-    if (e.key === 'ArrowLeft') prevBtn.click();
-  });
+      items.forEach(item => {
+        let row = rows.find(r => Math.abs(r.anchorTop - item.rect.top) <= ROW_TOLERANCE);
 
-  let startX = 0;
+        if (!row) {
+          row = {
+            anchorTop: item.rect.top,
+            items: []
+          };
+          rows.push(row);
+        }
 
-  lightbox.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-  });
+        row.items.push(item);
+      });
 
-  lightbox.addEventListener('touchend', (e) => {
-    let endX = e.changedTouches[0].clientX;
-    let diff = startX - endX;
+      rows.sort((a, b) => a.anchorTop - b.anchorTop);
 
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextBtn.click();
+      return rows.map(row => {
+        const top = Math.min(...row.items.map(item => item.rect.top));
+        const maxHeight = Math.max(...row.items.map(item => item.rect.height));
+        const indices = row.items.map(item => item.index);
+
+        return {
+          indices,
+          count: row.items.length,
+          top,
+          maxHeight,
+          centerY: top + maxHeight / 2
+        };
+      });
+    }
+
+    function getRowInfoByIndex(index) {
+      const rows = getRowsData();
+      return rows.find(row => row.indices.includes(index));
+    }
+
+    function isSingleImageRow(index) {
+      const row = getRowInfoByIndex(index);
+      return row && row.count === 1;
+    }
+
+    function getMultiImageStageRect(index) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const img = getThumb(index);
+
+      const naturalW = img.naturalWidth || img.width || 1600;
+      const naturalH = img.naturalHeight || img.height || 1000;
+      const ratio = naturalW / naturalH;
+
+      let width = vw - MARGIN * 2;
+      let height = width / ratio;
+
+      if (height > vh - MARGIN * 2) {
+        height = vh - MARGIN * 2;
+        width = height * ratio;
+      }
+
+      return {
+        left: (vw - width) / 2,
+        top: (vh - height) / 2,
+        width,
+        height
+      };
+    }
+
+    function getSingleImageStageRect(index) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const rect = getThumbRect(index);
+
+      return {
+        left: (vw - rect.width) / 2,
+        top: (vh - rect.height) / 2,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    function getStageRect(index) {
+      if (isSingleImageRow(index)) {
+        return getSingleImageStageRect(index);
+      }
+      return getMultiImageStageRect(index);
+    }
+
+    function applyRect(rect, immediate = false) {
+      if (immediate) {
+        stage.style.transition = 'none';
       } else {
-        prevBtn.click();
+        stage.style.transition = '';
+      }
+
+      stage.style.left = rect.left + 'px';
+      stage.style.top = rect.top + 'px';
+      stage.style.width = rect.width + 'px';
+      stage.style.height = rect.height + 'px';
+
+      if (immediate) {
+        stage.offsetHeight;
+        stage.style.transition = '';
       }
     }
-  });
 
-  imageArray.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-</script>
+    function alignCurrentImageOrRow(index, behavior = 'smooth') {
+      const row = getRowInfoByIndex(index);
+      const thumbRect = getThumbRect(index);
 
-<script>
-  const gallery = document.querySelector('.gallery');
+      if (!row) return;
 
-  function shuffleGallery() {
-    const items = Array.from(gallery.children);
+      const referenceCenterY =
+        row.count === 1
+          ? thumbRect.top + thumbRect.height / 2
+          : row.centerY;
 
-    for (let i = items.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [items[i], items[j]] = [items[j], items[i]];
+      const targetY =
+        row.count === 1
+          ? window.innerHeight * SINGLE_ROW_TARGET_Y
+          : window.innerHeight * MULTI_ROW_TARGET_Y;
+
+      const delta = referenceCenterY - targetY;
+      const targetScroll = window.scrollY + delta;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+      window.scrollTo({
+        top: clamp(targetScroll, 0, Math.max(0, maxScroll)),
+        behavior
+      });
     }
 
-    items.forEach(item => gallery.appendChild(item));
-  }
+    function openLightbox(index) {
+      currentIndex = index;
+      setImage(index);
 
-  shuffleGallery();
-</script>
+      const fromRect = getThumbRect(index);
+      applyRect(fromRect, true);
 
+      lightbox.classList.remove('closing');
+      lightbox.classList.add('active');
+      lightbox.setAttribute('aria-hidden', 'false');
+
+      requestAnimationFrame(() => {
+        applyRect(getStageRect(index));
+
+        setTimeout(() => {
+          alignCurrentImageOrRow(index, 'smooth');
+        }, 40);
+      });
+    }
+
+    function closeLightbox() {
+      lightbox.classList.add('closing');
+      lightbox.setAttribute('aria-hidden', 'true');
+
+      applyRect(getThumbRect(currentIndex));
+
+      setTimeout(() => {
+        lightbox.classList.remove('active', 'closing');
+      }, 460);
+    }
+
+    function goTo(index) {
+      currentIndex = (index + thumbs.length) % thumbs.length;
+      setImage(currentIndex);
+
+      applyRect(getStageRect(currentIndex), true);
+      alignCurrentImageOrRow(currentIndex, 'smooth');
+    }
+
+    thumbs.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        openLightbox(index);
+      });
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goTo(currentIndex + 1);
+    });
+
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goTo(currentIndex - 1);
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    backdrop.addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') goTo(currentIndex + 1);
+      if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
+    });
+
+    window.addEventListener('resize', () => {
+      if (!lightbox.classList.contains('active')) return;
+
+      applyRect(getStageRect(currentIndex), true);
+      alignCurrentImageOrRow(currentIndex, 'auto');
+    });
+
+    let startX = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goTo(currentIndex + 1);
+        else goTo(currentIndex - 1);
+      }
+    }, { passive: true });
+  </script>
 </body>
-</html>
+</html> 
