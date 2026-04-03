@@ -227,10 +227,20 @@
       display: block;
     }
 
+    .arrow-white {
+  display: none;
+    }
+
+    
     @media (max-width: 768px) {
-      .nav {
+      .arrow-black {
         display: none;
       }
+
+      .arrow-white {
+        display: block;
+      }
+    }
 
       .lightbox-close {
         top: 16px;
@@ -294,17 +304,19 @@
 
     <button class="lightbox-close" id="closeBtn" aria-label="Chiudi lightbox">&times;</button>
 
-    <button class="nav left" id="prev" aria-label="Immagine precedente">
-      <img src="img/arrow-left.png" alt="">
-    </button>
+<button class="nav left" id="prev" aria-label="Immagine precedente">
+  <img src="img/arrow-left-black.png" class="arrow arrow-black" alt="">
+  <img src="img/arrow-left-white.png" class="arrow arrow-white" alt="">
+</button>
 
     <div class="lightbox-stage" id="stage">
       <img id="lightboxImg" src="" alt="">
     </div>
 
-    <button class="nav right" id="next" aria-label="Immagine successiva">
-      <img src="img/arrow-right.png" alt="">
-    </button>
+<button class="nav right" id="next" aria-label="Immagine successiva">
+  <img src="img/arrow-right-black.png" class="arrow arrow-black" alt="">
+  <img src="img/arrow-right-white.png" class="arrow arrow-white" alt="">
+</button>
   </div>
 
   <script>
