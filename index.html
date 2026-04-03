@@ -14,32 +14,48 @@
 
     body {
       background: #fff;
-      font-family: Arial, sans-serif;
+      font-family: Helvetica Neue, sans-serif;
     }
 
     .wrapper {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 80px 20px 40px; /* spazio per header fisso */
     }
 
+    /* HEADER FIXED SOLO TITOLO */
     .header {
+      position: fixed;
+      width: 100%;
+      background: #fff;
+      z-index: 1000;
+      padding: 20px 20px;
+      border-bottom: none;
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header h1 {
+      font-size: 25px;
+    }
+
+    /* CONTENUTO HEADER (sotto) */
+    .intro {
       max-width: 700px;
       margin-bottom: 60px;
     }
 
-    .header h1 {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    .header p {
+    .intro p {
       font-size: 13px;
       line-height: 1.6;
       margin-bottom: 20px;
     }
 
-    .header a {
+    .intro a {
       display: block;
       font-size: 14px;
       color: #000;
@@ -80,7 +96,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7); /* <-- OPACITÀ QUI */
+      background: rgba(0,0,0,0.7);
       display: none;
       justify-content: center;
       align-items: center;
@@ -133,15 +149,32 @@
       pointer-events: none;
     }
 
+    /* BACK TO TOP */
+    .footer-link {
+      display: block;
+      font-size: 14px;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 60px;
+    }
+
   </style>
 </head>
 
 <body>
 
+<!-- HEADER FIXED -->
+<div class="header">
+  <div class="header-inner">
+    <h1>Soin.visual</h1>
+  </div>
+</div>
+
 <div class="wrapper">
 
-  <div class="header">
-    <h1>Soin.visual</h1>
+  <!-- INTRO (ex header) -->
+  <div class="intro">
     <p>
       Soin. is a creative atelier based on architectural visualisation.
     </p>
@@ -151,6 +184,11 @@
   </div>
 
   <div class="gallery">
+    <div class="gallery-item"><img src="img/image14.jpg"></div>
+    <div class="gallery-item"><img src="img/image13.jpg"></div>
+    <div class="gallery-item"><img src="img/image10.jpg"></div>
+    <div class="gallery-item"><img src="img/image11.jpg"></div>
+    <div class="gallery-item"><img src="img/image12.jpg"></div>
     <div class="gallery-item"><img src="img/image1.jpg"></div>
     <div class="gallery-item"><img src="img/image2.jpg"></div>
     <div class="gallery-item"><img src="img/image3.jpg"></div>
@@ -162,19 +200,20 @@
     <div class="gallery-item"><img src="img/image9.jpg"></div>
   </div>
 
+  <a href="#" id="backToTop" class="footer-link">Back to top</a>
+
 </div>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <span class="lightbox-close" id="closeBtn">&times;</span>
   <span class="nav left" id="prev">
-  <img src="img/arrow-white-left.png" alt="Prev">
+    <img src="img/arrow-white-left.png" alt="Prev">
   </span>
   <img id="lightboxImg" src="">
   <span class="nav right" id="next">
-  <img src="img/arrow-white-right.png" alt="Next">
+    <img src="img/arrow-white-right.png" alt="Next">
   </span>
-
 </div>
 
 <script>
@@ -218,12 +257,10 @@
     showImage(currentIndex);
   });
 
-  // click fuori
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
   });
 
-  // tastiera
   document.addEventListener('keydown', (e) => {
     if (!lightbox.classList.contains('active')) return;
 
@@ -232,7 +269,6 @@
     if (e.key === 'ArrowLeft') prevBtn.click();
   });
 
-  // swipe mobile
   let startX = 0;
 
   lightbox.addEventListener('touchstart', (e) => {
@@ -252,12 +288,27 @@
     }
   });
 
-  // preload immagini
   imageArray.forEach(src => {
     const img = new Image();
     img.src = src;
   });
+</script>
 
+<script>
+  const gallery = document.querySelector('.gallery');
+
+  function shuffleGallery() {
+    const items = Array.from(gallery.children);
+
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+
+    items.forEach(item => gallery.appendChild(item));
+  }
+
+  shuffleGallery();
 </script>
 
 </body>
