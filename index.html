@@ -98,6 +98,13 @@
       }
     }
 
+@media (max-width: 768px) {
+  body.no-scroll {
+    overflow: hidden;
+    touch-action: none;
+  }
+}
+
     @media (max-width: 600px) {
       .gallery {
         grid-template-columns: 1fr;
@@ -121,6 +128,7 @@
       inset: 0;
       z-index: 9999;
       pointer-events: none;
+      touch-action: pan-y;
     }
 
     .lightbox.active,
@@ -184,46 +192,24 @@
       touch-action: pan-y;
     }
 
-.lightbox-slide {
-  width: 33.333333%;
-  flex: 0 0 33.333333%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
+    .lightbox-slide {
+      width: 33.333333%;
+      flex: 0 0 33.333333%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-.lightbox-slide-frame {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.lightbox-slide.is-prev .lightbox-slide-frame,
-.lightbox-slide.is-next .lightbox-slide-frame {
-  padding: 0 12px;
-}
-
-.lightbox-slide.is-current .lightbox-slide-frame {
-  padding: 0;
-}
-
-.lightbox-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
-  user-select: none;
-}
-
-@media (max-width: 768px) {
-  .lightbox-slide.is-prev .lightbox-slide-frame,
-  .lightbox-slide.is-next .lightbox-slide-frame {
-    padding: 0 10px;
-  }
-}
+    .lightbox-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
 
     .lightbox-close,
     .nav {
@@ -331,25 +317,11 @@
 
     <div class="lightbox-stage" id="stage">
       <div class="lightbox-stage-viewport" id="stageViewport">
-<div class="lightbox-track" id="stageTrack">
-  <div class="lightbox-slide is-prev">
-    <div class="lightbox-slide-frame">
-      <img id="slidePrev" src="" alt="">
-    </div>
-  </div>
-
-  <div class="lightbox-slide is-current">
-    <div class="lightbox-slide-frame">
-      <img id="slideCurrent" src="" alt="">
-    </div>
-  </div>
-
-  <div class="lightbox-slide is-next">
-    <div class="lightbox-slide-frame">
-      <img id="slideNext" src="" alt="">
-    </div>
-  </div>
-</div>
+        <div class="lightbox-track" id="stageTrack">
+          <div class="lightbox-slide"><img id="slidePrev" src="" alt=""></div>
+          <div class="lightbox-slide"><img id="slideCurrent" src="" alt=""></div>
+          <div class="lightbox-slide"><img id="slideNext" src="" alt=""></div>
+        </div>
       </div>
     </div>
 
@@ -374,7 +346,6 @@
 
     let currentIndex = 0;
     let isNavigating = false;
-let frozenStageRect = null;
 
     let pointerDown = false;
     let pointerId = null;
@@ -448,7 +419,7 @@ let frozenStageRect = null;
     }
 
     function setTrackPercent(percent, animated = true) {
-      stageTrack.style.transition = animated ? 'transform 0.36s cubic-bezier(.22,.61,.36,1)' : 'none';
+      stageTrack.style.transition = animated ? 'transform 0.70s cubic-bezier(.22,.61,.36,1)' : 'none';
       stageTrack.style.transform = `translate3d(${percent}%, 0, 0)`;
     }
 
@@ -592,98 +563,99 @@ let frozenStageRect = null;
     }
 
     function openLightbox(index) {
-  currentIndex = index;
-  isNavigating = false;
-  updateSlides(currentIndex);
-  resetTrackToCenter(true);
+      currentIndex = index;
+      isNavigating = false;
+      updateSlides(currentIndex);
+      resetTrackToCenter(true);
 
-  const fromRect = getThumbRect(index);
-  applyRect(fromRect, true);
+      const fromRect = getThumbRect(index);
+      applyRect(fromRect, true);
 
-  lightbox.classList.remove('closing');
-  lightbox.classList.add('active');
-  lightbox.setAttribute('aria-hidden', 'false');
+      lightbox.classList.remove('closing');
+      lightbox.classList.add('active');
+      lightbox.setAttribute('aria-hidden', 'false');
+document.body.classList.add('no-scroll');
 
-  requestAnimationFrame(() => {
-    frozenStageRect = getStageRect(index);
-    applyRect(frozenStageRect);
+      requestAnimationFrame(() => {
+        applyRect(getStageRect(index));
 
-    setTimeout(() => {
-      alignCurrentImageOrRow(index, 'smooth');
-    }, 40);
-  });
-}
+        setTimeout(() => {
+          alignCurrentImageOrRow(index, 'smooth');
+        }, 40);
+      });
+    }
 
-function closeLightbox() {
-  if (isNavigating || pointerDown) return;
+    function closeLightbox() {
+      if (isNavigating || pointerDown) return;
 
-  lightbox.classList.add('closing');
-  lightbox.setAttribute('aria-hidden', 'true');
+      lightbox.classList.add('closing');
+      lightbox.setAttribute('aria-hidden', 'true');
 
-  applyRect(getThumbRect(currentIndex));
+      applyRect(getThumbRect(currentIndex));
 
-  setTimeout(() => {
-    lightbox.classList.remove('active', 'closing');
-    frozenStageRect = null;
-  }, 460);
-}
+      setTimeout(() => {
+        lightbox.classList.remove('active', 'closing');
+document.body.classList.remove('no-scroll');
+      }, 460);
+    }
 
-function finalizeNavigation(newIndex) {
-  currentIndex = normalizeIndex(newIndex);
-  updateSlides(currentIndex);
-  resetTrackToCenter(true);
+    function finalizeNavigation(newIndex) {
+      currentIndex = normalizeIndex(newIndex);
+      updateSlides(currentIndex);
+      resetTrackToCenter(true);
+      applyRect(getStageRect(currentIndex), true);
+      isNavigating = false;
+    }
 
-  if (frozenStageRect) {
-    applyRect(frozenStageRect, true);
-  }
+    function animateToTarget(targetPercent, nextIndex) {
+      if (isNavigating) return;
+      isNavigating = true;
 
-  isNavigating = false;
-}
+      applyRect(getStageRect(normalizeIndex(nextIndex)));
+      alignCurrentImageOrRow(normalizeIndex(nextIndex), 'smooth');
 
-function animateToTarget(targetPercent, nextIndex) {
-  if (isNavigating) return;
-  isNavigating = true;
+      const onEnd = (event) => {
+        if (event.target !== stageTrack || event.propertyName !== 'transform') return;
+        stageTrack.removeEventListener('transitionend', onEnd);
+        finalizeNavigation(nextIndex);
+      };
 
-  alignCurrentImageOrRow(normalizeIndex(nextIndex), 'smooth');
-
-  const onEnd = (event) => {
-    if (event.target !== stageTrack || event.propertyName !== 'transform') return;
-    stageTrack.removeEventListener('transitionend', onEnd);
-    finalizeNavigation(nextIndex);
-  };
-
-  stageTrack.addEventListener('transitionend', onEnd);
-  setTrackPercent(targetPercent, true);
-}
+      stageTrack.addEventListener('transitionend', onEnd);
+      setTrackPercent(targetPercent, true);
+    }
 
     function goTo(index) {
-  const normalized = normalizeIndex(index);
-  if (normalized === currentIndex) return;
+      const normalized = normalizeIndex(index);
+      if (normalized === currentIndex) return;
 
-  if (normalized === getNextIndex(currentIndex)) {
-    animateToTarget(NEXT_PERCENT, normalized);
-    return;
-  }
+      if (normalized === getNextIndex(currentIndex)) {
+        animateToTarget(NEXT_PERCENT, normalized);
+        return;
+      }
 
-  if (normalized === getPrevIndex(currentIndex)) {
-    animateToTarget(PREV_PERCENT, normalized);
-    return;
-  }
+      if (normalized === getPrevIndex(currentIndex)) {
+        animateToTarget(PREV_PERCENT, normalized);
+        return;
+      }
 
-  currentIndex = normalized;
-  updateSlides(currentIndex);
-  resetTrackToCenter(true);
-
-  if (frozenStageRect) {
-    applyRect(frozenStageRect, true);
-  }
-
-  alignCurrentImageOrRow(currentIndex, 'smooth');
-}
+      currentIndex = normalized;
+      updateSlides(currentIndex);
+      resetTrackToCenter(true);
+      applyRect(getStageRect(currentIndex), true);
+      alignCurrentImageOrRow(currentIndex, 'smooth');
+    }
 
     function onPointerDown(e) {
       if (!lightbox.classList.contains('active')) return;
       if (isNavigating) return;
+
+      if (
+        e.target.closest('#closeBtn') ||
+        e.target.closest('#prev') ||
+        e.target.closest('#next')
+      ) {
+        return;
+      }
 
       pointerDown = true;
       pointerId = e.pointerId;
@@ -721,17 +693,7 @@ function animateToTarget(targetPercent, nextIndex) {
       isDraggingCarousel = true;
       currentDeltaX = deltaX;
 
-      const viewportWidth = stageViewport.clientWidth || 1;
-      const atFirst = false;
-      const atLast = false;
-
-      let effectiveDeltaX = deltaX;
-
-      if ((atFirst && deltaX > 0) || (atLast && deltaX < 0)) {
-        effectiveDeltaX = deltaX * 0.35;
-      }
-
-      setTrackTranslatePx(effectiveDeltaX, true);
+      setTrackTranslatePx(deltaX, true);
       e.preventDefault();
     }
 
@@ -748,8 +710,8 @@ function animateToTarget(targetPercent, nextIndex) {
         return;
       }
 
-      const viewportWidth = stageViewport.clientWidth || 1;
-      const threshold = Math.min(120, viewportWidth * 0.18);
+      const viewportWidth = window.innerWidth || 1;
+      const threshold = Math.min(140, viewportWidth * 0.18);
       const deltaX = currentDeltaX;
 
       isDraggingCarousel = false;
@@ -810,22 +772,21 @@ function animateToTarget(targetPercent, nextIndex) {
       if (e.key === 'ArrowLeft') goTo(getPrevIndex(currentIndex));
     });
 
-window.addEventListener('resize', () => {
-  if (!lightbox.classList.contains('active')) return;
-  if (isNavigating || pointerDown) return;
+    window.addEventListener('resize', () => {
+      if (!lightbox.classList.contains('active')) return;
+      if (isNavigating || pointerDown) return;
 
-  frozenStageRect = getStageRect(currentIndex);
-  applyRect(frozenStageRect, true);
-  alignCurrentImageOrRow(currentIndex, 'auto');
-  updateSlides(currentIndex);
-  resetTrackToCenter(true);
-});
+      applyRect(getStageRect(currentIndex), true);
+      alignCurrentImageOrRow(currentIndex, 'auto');
+      updateSlides(currentIndex);
+      resetTrackToCenter(true);
+    });
 
-    stageViewport.addEventListener('pointerdown', onPointerDown, { passive: true });
-    stageViewport.addEventListener('pointermove', onPointerMove, { passive: false });
-    stageViewport.addEventListener('pointerup', onPointerUp);
-    stageViewport.addEventListener('pointercancel', onPointerCancel);
-    stageViewport.addEventListener('lostpointercapture', onPointerCancel);
+    lightbox.addEventListener('pointerdown', onPointerDown, { passive: true });
+    lightbox.addEventListener('pointermove', onPointerMove, { passive: false });
+    lightbox.addEventListener('pointerup', onPointerUp);
+    lightbox.addEventListener('pointercancel', onPointerCancel);
+    lightbox.addEventListener('lostpointercapture', onPointerCancel);
   </script>
 </body>
 </html>
