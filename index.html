@@ -112,7 +112,7 @@
       text-decoration: none;
       font-weight: bold;
       margin-top: 60px;
-      padding-top: 150px;
+      padding: 100px;
     }
 
     /* LIGHTBOX */
@@ -160,6 +160,7 @@
         width 0.45s cubic-bezier(.22,.61,.36,1),
         height 0.45s cubic-bezier(.22,.61,.36,1),
         opacity 0.15s linear;
+      touch-action: pan-y;
     }
 
     .lightbox.active .lightbox-stage,
@@ -167,14 +168,62 @@
       opacity: 1;
     }
 
-    .lightbox-stage img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      pointer-events: none;
-      user-select: none;
+    .lightbox-stage-viewport {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      touch-action: pan-y;
     }
+
+    .lightbox-track {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      transform: translate3d(-33.333333%, 0, 0);
+      will-change: transform;
+      touch-action: pan-y;
+    }
+
+.lightbox-slide {
+  width: 33.333333%;
+  flex: 0 0 33.333333%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.lightbox-slide-frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-slide.is-prev .lightbox-slide-frame,
+.lightbox-slide.is-next .lightbox-slide-frame {
+  padding: 0 12px;
+}
+
+.lightbox-slide.is-current .lightbox-slide-frame {
+  padding: 0;
+}
+
+.lightbox-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .lightbox-slide.is-prev .lightbox-slide-frame,
+  .lightbox-slide.is-next .lightbox-slide-frame {
+    padding: 0 10px;
+  }
+}
 
     .lightbox-close,
     .nav {
@@ -256,33 +305,15 @@
     </div>
 
     <div class="gallery">
-      <div class="gallery-item">
-        <img src="img/image1.jpg" data-full="img/image1.jpg" alt="Image 1">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image2.jpg" data-full="img/image2.jpg" alt="Image 2">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image3.jpg" data-full="img/image3.jpg" alt="Image 3">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image4.jpg" data-full="img/image4.jpg" alt="Image 4">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image5.jpg" data-full="img/image5.jpg" alt="Image 5">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image6.jpg" data-full="img/image6.jpg" alt="Image 6">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image7.jpg" data-full="img/image7.jpg" alt="Image 7">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image8.jpg" data-full="img/image8.jpg" alt="Image 8">
-      </div>
-      <div class="gallery-item">
-        <img src="img/image9.jpg" data-full="img/image9.jpg" alt="Image 9">
-      </div>
+      <div class="gallery-item"><img src="img/image1.jpg" data-full="img/image1.jpg" alt="Image 1"></div>
+      <div class="gallery-item"><img src="img/image2.jpg" data-full="img/image2.jpg" alt="Image 2"></div>
+      <div class="gallery-item"><img src="img/image3.jpg" data-full="img/image3.jpg" alt="Image 3"></div>
+      <div class="gallery-item"><img src="img/image4.jpg" data-full="img/image4.jpg" alt="Image 4"></div>
+      <div class="gallery-item"><img src="img/image5.jpg" data-full="img/image5.jpg" alt="Image 5"></div>
+      <div class="gallery-item"><img src="img/image6.jpg" data-full="img/image6.jpg" alt="Image 6"></div>
+      <div class="gallery-item"><img src="img/image7.jpg" data-full="img/image7.jpg" alt="Image 7"></div>
+      <div class="gallery-item"><img src="img/image8.jpg" data-full="img/image8.jpg" alt="Image 8"></div>
+      <div class="gallery-item"><img src="img/image9.jpg" data-full="img/image9.jpg" alt="Image 9"></div>
     </div>
 
     <a href="#" class="footer-link">Back to top</a>
@@ -295,15 +326,35 @@
     <button class="lightbox-close" id="closeBtn" aria-label="Chiudi lightbox">&times;</button>
 
     <button class="nav left" id="prev" aria-label="Immagine precedente">
-      <img src="img/arrow-left-black.png" alt="">
+      <img src="img/arrow-left.png" alt="">
     </button>
 
     <div class="lightbox-stage" id="stage">
-      <img id="lightboxImg" src="" alt="">
+      <div class="lightbox-stage-viewport" id="stageViewport">
+<div class="lightbox-track" id="stageTrack">
+  <div class="lightbox-slide is-prev">
+    <div class="lightbox-slide-frame">
+      <img id="slidePrev" src="" alt="">
+    </div>
+  </div>
+
+  <div class="lightbox-slide is-current">
+    <div class="lightbox-slide-frame">
+      <img id="slideCurrent" src="" alt="">
+    </div>
+  </div>
+
+  <div class="lightbox-slide is-next">
+    <div class="lightbox-slide-frame">
+      <img id="slideNext" src="" alt="">
+    </div>
+  </div>
+</div>
+      </div>
     </div>
 
     <button class="nav right" id="next" aria-label="Immagine successiva">
-      <img src="img/arrow-right-black.png" alt="">
+      <img src="img/arrow-right.png" alt="">
     </button>
   </div>
 
@@ -312,17 +363,36 @@
     const lightbox = document.getElementById('lightbox');
     const backdrop = document.getElementById('backdrop');
     const stage = document.getElementById('stage');
-    const stageImg = document.getElementById('lightboxImg');
+    const stageViewport = document.getElementById('stageViewport');
+    const stageTrack = document.getElementById('stageTrack');
+    const slidePrev = document.getElementById('slidePrev');
+    const slideCurrent = document.getElementById('slideCurrent');
+    const slideNext = document.getElementById('slideNext');
     const closeBtn = document.getElementById('closeBtn');
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
 
     let currentIndex = 0;
+    let isNavigating = false;
+let frozenStageRect = null;
+
+    let pointerDown = false;
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let currentDeltaX = 0;
+    let isDraggingCarousel = false;
+    let gestureLocked = false;
+    let gestureAxis = null;
 
     const MARGIN = 24;
-    const MULTI_ROW_TARGET_Y = 0.50;   // per righe con più immagini
-    const SINGLE_ROW_TARGET_Y = 0.50;  // per righe con una sola immagine
+    const MULTI_ROW_TARGET_Y = 0.50;
+    const SINGLE_ROW_TARGET_Y = 0.50;
     const ROW_TOLERANCE = 4;
+
+    const CENTER_PERCENT = -33.333333;
+    const PREV_PERCENT = 0;
+    const NEXT_PERCENT = -66.666666;
 
     function clamp(value, min, max) {
       return Math.min(Math.max(value, min), max);
@@ -332,14 +402,61 @@
       return thumbs[index];
     }
 
+    function normalizeIndex(index) {
+      return (index + thumbs.length) % thumbs.length;
+    }
+
+    function getPrevIndex(index) {
+      return normalizeIndex(index - 1);
+    }
+
+    function getNextIndex(index) {
+      return normalizeIndex(index + 1);
+    }
+
     function getThumbRect(index) {
       return getThumb(index).getBoundingClientRect();
     }
 
-    function setImage(index) {
+    function getImageData(index) {
       const img = getThumb(index);
-      stageImg.src = img.dataset.full || img.src;
-      stageImg.alt = img.alt || '';
+      return {
+        src: img.dataset.full || img.src,
+        alt: img.alt || ''
+      };
+    }
+
+    function setImgElement(imgEl, data) {
+      imgEl.src = data.src;
+      imgEl.alt = data.alt;
+    }
+
+    function updateSlides(index) {
+      setImgElement(slidePrev, getImageData(getPrevIndex(index)));
+      setImgElement(slideCurrent, getImageData(index));
+      setImgElement(slideNext, getImageData(getNextIndex(index)));
+    }
+
+    function setTrackTranslatePx(deltaX, immediate = false) {
+      if (immediate) {
+        stageTrack.style.transition = 'none';
+      }
+      stageTrack.style.transform = `translate3d(calc(${CENTER_PERCENT}% + ${deltaX}px), 0, 0)`;
+      if (immediate) {
+        stageTrack.offsetHeight;
+      }
+    }
+
+    function setTrackPercent(percent, animated = true) {
+      stageTrack.style.transition = animated ? 'transform 0.36s cubic-bezier(.22,.61,.36,1)' : 'none';
+      stageTrack.style.transform = `translate3d(${percent}%, 0, 0)`;
+    }
+
+    function resetTrackToCenter(immediate = true) {
+      setTrackPercent(CENTER_PERCENT, !immediate ? true : false);
+      if (immediate) {
+        stageTrack.offsetHeight;
+      }
     }
 
     function getRowsData() {
@@ -354,10 +471,7 @@
         let row = rows.find(r => Math.abs(r.anchorTop - item.rect.top) <= ROW_TOLERANCE);
 
         if (!row) {
-          row = {
-            anchorTop: item.rect.top,
-            items: []
-          };
+          row = { anchorTop: item.rect.top, items: [] };
           rows.push(row);
         }
 
@@ -430,10 +544,7 @@
     }
 
     function getStageRect(index) {
-      if (isSingleImageRow(index)) {
-        return getSingleImageStageRect(index);
-      }
-      return getMultiImageStageRect(index);
+      return isSingleImageRow(index) ? getSingleImageStageRect(index) : getMultiImageStageRect(index);
     }
 
     function applyRect(rect, immediate = false) {
@@ -481,42 +592,190 @@
     }
 
     function openLightbox(index) {
-      currentIndex = index;
-      setImage(index);
+  currentIndex = index;
+  isNavigating = false;
+  updateSlides(currentIndex);
+  resetTrackToCenter(true);
 
-      const fromRect = getThumbRect(index);
-      applyRect(fromRect, true);
+  const fromRect = getThumbRect(index);
+  applyRect(fromRect, true);
 
-      lightbox.classList.remove('closing');
-      lightbox.classList.add('active');
-      lightbox.setAttribute('aria-hidden', 'false');
+  lightbox.classList.remove('closing');
+  lightbox.classList.add('active');
+  lightbox.setAttribute('aria-hidden', 'false');
 
-      requestAnimationFrame(() => {
-        applyRect(getStageRect(index));
+  requestAnimationFrame(() => {
+    frozenStageRect = getStageRect(index);
+    applyRect(frozenStageRect);
 
-        setTimeout(() => {
-          alignCurrentImageOrRow(index, 'smooth');
-        }, 40);
-      });
-    }
+    setTimeout(() => {
+      alignCurrentImageOrRow(index, 'smooth');
+    }, 40);
+  });
+}
 
-    function closeLightbox() {
-      lightbox.classList.add('closing');
-      lightbox.setAttribute('aria-hidden', 'true');
+function closeLightbox() {
+  if (isNavigating || pointerDown) return;
 
-      applyRect(getThumbRect(currentIndex));
+  lightbox.classList.add('closing');
+  lightbox.setAttribute('aria-hidden', 'true');
 
-      setTimeout(() => {
-        lightbox.classList.remove('active', 'closing');
-      }, 460);
-    }
+  applyRect(getThumbRect(currentIndex));
+
+  setTimeout(() => {
+    lightbox.classList.remove('active', 'closing');
+    frozenStageRect = null;
+  }, 460);
+}
+
+function finalizeNavigation(newIndex) {
+  currentIndex = normalizeIndex(newIndex);
+  updateSlides(currentIndex);
+  resetTrackToCenter(true);
+
+  if (frozenStageRect) {
+    applyRect(frozenStageRect, true);
+  }
+
+  isNavigating = false;
+}
+
+function animateToTarget(targetPercent, nextIndex) {
+  if (isNavigating) return;
+  isNavigating = true;
+
+  alignCurrentImageOrRow(normalizeIndex(nextIndex), 'smooth');
+
+  const onEnd = (event) => {
+    if (event.target !== stageTrack || event.propertyName !== 'transform') return;
+    stageTrack.removeEventListener('transitionend', onEnd);
+    finalizeNavigation(nextIndex);
+  };
+
+  stageTrack.addEventListener('transitionend', onEnd);
+  setTrackPercent(targetPercent, true);
+}
 
     function goTo(index) {
-      currentIndex = (index + thumbs.length) % thumbs.length;
-      setImage(currentIndex);
+  const normalized = normalizeIndex(index);
+  if (normalized === currentIndex) return;
 
-      applyRect(getStageRect(currentIndex), true);
-      alignCurrentImageOrRow(currentIndex, 'smooth');
+  if (normalized === getNextIndex(currentIndex)) {
+    animateToTarget(NEXT_PERCENT, normalized);
+    return;
+  }
+
+  if (normalized === getPrevIndex(currentIndex)) {
+    animateToTarget(PREV_PERCENT, normalized);
+    return;
+  }
+
+  currentIndex = normalized;
+  updateSlides(currentIndex);
+  resetTrackToCenter(true);
+
+  if (frozenStageRect) {
+    applyRect(frozenStageRect, true);
+  }
+
+  alignCurrentImageOrRow(currentIndex, 'smooth');
+}
+
+    function onPointerDown(e) {
+      if (!lightbox.classList.contains('active')) return;
+      if (isNavigating) return;
+
+      pointerDown = true;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      currentDeltaX = 0;
+      isDraggingCarousel = false;
+      gestureLocked = false;
+      gestureAxis = null;
+
+      stageTrack.style.transition = 'none';
+    }
+
+    function onPointerMove(e) {
+      if (!pointerDown || e.pointerId !== pointerId) return;
+      if (!lightbox.classList.contains('active')) return;
+      if (isNavigating) return;
+
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      if (!gestureLocked) {
+        if (Math.abs(deltaX) > 8 || Math.abs(deltaY) > 8) {
+          gestureLocked = true;
+          gestureAxis = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y';
+        } else {
+          return;
+        }
+      }
+
+      if (gestureAxis !== 'x') {
+        return;
+      }
+
+      isDraggingCarousel = true;
+      currentDeltaX = deltaX;
+
+      const viewportWidth = stageViewport.clientWidth || 1;
+      const atFirst = false;
+      const atLast = false;
+
+      let effectiveDeltaX = deltaX;
+
+      if ((atFirst && deltaX > 0) || (atLast && deltaX < 0)) {
+        effectiveDeltaX = deltaX * 0.35;
+      }
+
+      setTrackTranslatePx(effectiveDeltaX, true);
+      e.preventDefault();
+    }
+
+    function onPointerUp(e) {
+      if (!pointerDown || e.pointerId !== pointerId) return;
+
+      pointerDown = false;
+
+      if (!isDraggingCarousel || gestureAxis !== 'x') {
+        isDraggingCarousel = false;
+        gestureLocked = false;
+        gestureAxis = null;
+        setTrackPercent(CENTER_PERCENT, true);
+        return;
+      }
+
+      const viewportWidth = stageViewport.clientWidth || 1;
+      const threshold = Math.min(120, viewportWidth * 0.18);
+      const deltaX = currentDeltaX;
+
+      isDraggingCarousel = false;
+      gestureLocked = false;
+      gestureAxis = null;
+      currentDeltaX = 0;
+
+      if (deltaX <= -threshold) {
+        animateToTarget(NEXT_PERCENT, getNextIndex(currentIndex));
+      } else if (deltaX >= threshold) {
+        animateToTarget(PREV_PERCENT, getPrevIndex(currentIndex));
+      } else {
+        setTrackPercent(CENTER_PERCENT, true);
+      }
+    }
+
+    function onPointerCancel(e) {
+      if (!pointerDown || e.pointerId !== pointerId) return;
+
+      pointerDown = false;
+      isDraggingCarousel = false;
+      gestureLocked = false;
+      gestureAxis = null;
+      currentDeltaX = 0;
+
+      setTrackPercent(CENTER_PERCENT, true);
     }
 
     thumbs.forEach((img, index) => {
@@ -527,12 +786,12 @@
 
     nextBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      goTo(currentIndex + 1);
+      goTo(getNextIndex(currentIndex));
     });
 
     prevBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      goTo(currentIndex - 1);
+      goTo(getPrevIndex(currentIndex));
     });
 
     closeBtn.addEventListener('click', (e) => {
@@ -544,34 +803,29 @@
 
     document.addEventListener('keydown', (e) => {
       if (!lightbox.classList.contains('active')) return;
+      if (isNavigating) return;
 
       if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') goTo(currentIndex + 1);
-      if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
+      if (e.key === 'ArrowRight') goTo(getNextIndex(currentIndex));
+      if (e.key === 'ArrowLeft') goTo(getPrevIndex(currentIndex));
     });
 
-    window.addEventListener('resize', () => {
-      if (!lightbox.classList.contains('active')) return;
+window.addEventListener('resize', () => {
+  if (!lightbox.classList.contains('active')) return;
+  if (isNavigating || pointerDown) return;
 
-      applyRect(getStageRect(currentIndex), true);
-      alignCurrentImageOrRow(currentIndex, 'auto');
-    });
+  frozenStageRect = getStageRect(currentIndex);
+  applyRect(frozenStageRect, true);
+  alignCurrentImageOrRow(currentIndex, 'auto');
+  updateSlides(currentIndex);
+  resetTrackToCenter(true);
+});
 
-    let startX = 0;
-
-    lightbox.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-    }, { passive: true });
-
-    lightbox.addEventListener('touchend', (e) => {
-      const endX = e.changedTouches[0].clientX;
-      const diff = startX - endX;
-
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) goTo(currentIndex + 1);
-        else goTo(currentIndex - 1);
-      }
-    }, { passive: true });
+    stageViewport.addEventListener('pointerdown', onPointerDown, { passive: true });
+    stageViewport.addEventListener('pointermove', onPointerMove, { passive: false });
+    stageViewport.addEventListener('pointerup', onPointerUp);
+    stageViewport.addEventListener('pointercancel', onPointerCancel);
+    stageViewport.addEventListener('lostpointercapture', onPointerCancel);
   </script>
 </body>
-</html> 
+</html>
