@@ -17,6 +17,7 @@
       scroll-behavior: smooth;
     }
 
+
     body {
       background: #fff;
       font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -78,6 +79,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       align-items: start;
+      margin-bottom: 50px;
     }
 
     .gallery-item {
@@ -118,8 +120,9 @@
       color: #000;
       text-decoration: none;
       font-weight: bold;
-      margin-top: 60px;
-      padding: 100px;
+      margin-top: 10px;
+      margin-bottom: 200px;
+      padding: 0px;
     }
 
     /* LIGHTBOX */
@@ -302,6 +305,7 @@
       <div class="gallery-item"><img src="img/image9.jpg" data-full="img/image9.jpg" alt="Image 9"></div>
     </div>
 
+
     <a href="#" class="footer-link">Back to top</a>
   </div>
 
@@ -330,15 +334,7 @@
     </button>
   </div>
 
-<script>
-  // RANDOMIZZAZIONE GALLERIA
-  const gallery = document.querySelector('.gallery');
-  const items = Array.from(gallery.children);
-
-  items
-    .sort(() => Math.random() - 0.5)
-    .forEach(item => gallery.appendChild(item));
-
+  <script>
     const thumbs = [...document.querySelectorAll('.gallery-item img')];
     const lightbox = document.getElementById('lightbox');
     const backdrop = document.getElementById('backdrop');
