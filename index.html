@@ -330,7 +330,15 @@
     </button>
   </div>
 
-  <script>
+<script>
+  // RANDOMIZZAZIONE GALLERIA
+  const gallery = document.querySelector('.gallery');
+  const items = Array.from(gallery.children);
+
+  items
+    .sort(() => Math.random() - 0.5)
+    .forEach(item => gallery.appendChild(item));
+
     const thumbs = [...document.querySelectorAll('.gallery-item img')];
     const lightbox = document.getElementById('lightbox');
     const backdrop = document.getElementById('backdrop');
